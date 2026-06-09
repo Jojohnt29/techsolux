@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TechSolux — Studio digital · Sites, apps & marques</title>
+<meta name="description" content="TechSolux — studio digital au Bénin. Sites web, applications mobiles et identité de marque, conçus et codés par Fidèle Sodoga.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/base.css">
+<link rel="stylesheet" href="assets/landing.css">
+<link rel="stylesheet" href="assets/hero-show.css">
+</head>
+<body>
+
+<!-- ============ NAV ============ -->
+<header class="nav" id="nav">
+  <a href="index.html" class="nav__logo" aria-label="TechSolux — accueil">
+    <img src="assets/img/logo-blue.png" alt="TechSolux">
+  </a>
+  <nav class="nav__links">
+    <a href="#work">Travaux</a>
+    <a href="#services">Services</a>
+    <a href="#studio">Studio</a>
+    <a href="#process">Process</a>
+    <a href="#contact">Contact</a>
+  </nav>
+  <div class="nav__cta">
+    <a href="#contact" class="btn">Démarrer un projet <span class="arr">→</span></a>
+    <button class="nav__burger" id="burger" aria-label="Menu"><span></span><span></span><span></span></button>
+  </div>
+</header>
+
+<!-- ============ SIDE INDEX ============ -->
+<nav class="dex" id="dex" aria-label="Index des sections">
+  <a href="#top" data-target="top" class="is-active"><span class="dex__n">01</span><i></i></a>
+  <a href="#services" data-target="services"><span class="dex__n">02</span><i></i></a>
+  <a href="#work" data-target="work"><span class="dex__n">03</span><i></i></a>
+  <a href="#studio" data-target="studio"><span class="dex__n">04</span><i></i></a>
+  <a href="#process" data-target="process"><span class="dex__n">05</span><i></i></a>
+  <a href="#stats" data-target="stats"><span class="dex__n">06</span><i></i></a>
+  <a href="#contact" data-target="contact"><span class="dex__n">07</span><i></i></a>
+</nav>
+
+<!-- ============ HERO (showcase carrousel) ============ -->
+<section class="hero hx" id="top" data-screen-label="Hero">
+  <canvas class="hx__canvas" id="hx-canvas" aria-hidden="true"></canvas>
+  <div class="hx__glow"></div>
+  <div class="hx__deck"><div class="hx__deck-inner" id="hx-deck"></div></div>
+  <div class="hx__ui">
+    <div class="hx__panel">
+      <div class="hx__badges">
+        <span class="hx__hot"><i></i>Vedette</span>
+        <span class="hx__cat" id="hx-cat"></span>
+      </div>
+      <h1 class="hx__title" id="hx-title"></h1>
+      <p class="hx__desc" id="hx-desc"></p>
+      <a class="hx__cta gbtn" id="hx-cta" href="#work"><span id="hx-cta-label">Voir le projet</span> <span class="arr">→</span></a>
+      <div class="hx__dots" id="hx-dots"></div>
+    </div>
+    <div class="hx__nav">
+      <button class="hx__navbtn gbtn" id="hx-prev" aria-label="Projet précédent"><span>▲</span></button>
+      <button class="hx__navbtn gbtn" id="hx-next" aria-label="Projet suivant"><span>▼</span></button>
+    </div>
+    <div class="hx__rail">
+      <a class="hx__all" href="#work">Voir tous les projets <span class="arr">▸</span></a>
+      <div class="hx__thumbs" id="hx-thumbs"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ MANIFESTO ============ -->
+<section class="section manifesto" id="manifesto">
+  <div class="rails"></div>
+  <div class="wrap">
+    <span class="eyebrow reveal" style="margin-bottom:clamp(40px,5vw,72px); display:flex">Manifeste</span>
+    <p class="manifesto__text reveal">
+      Pas d'agence, pas d'intermédiaire. <em>Un développeur qui</em> conçoit, code <span class="serif">et livre</span> — du premier pixel à la mise en ligne.
+    </p>
+    <div class="manifesto__foot reveal">
+      <a href="#work" class="btn">Voir les travaux <span class="arr">→</span></a>
+      <span class="mono" style="color:var(--ink-3)">50+ PROJETS LIVRÉS · WEB · MOBILE · E-COMMERCE</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SERVICES ============ -->
+<section class="section" id="services" data-screen-label="Services">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div>
+        <span class="idx">Ce qu'on fait</span>
+        <h2 class="h-sec">Services</h2>
+      </div>
+      <p class="lead">Six prestations, un seul interlocuteur. De la stratégie de marque au code en production.</p>
+    </div>
+    <div class="services__grid" id="services-grid">
+      <!-- injected -->
+    </div>
+  </div>
+</section>
+
+<!-- ============ MARQUEE ============ -->
+<div class="marquee reveal" aria-hidden="true">
+  <div class="marquee__track" id="marquee-track"></div>
+</div>
+
+<!-- ============ WORK ============ -->
+<section class="section" id="work" data-screen-label="Travaux">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div>
+        <span class="idx">Sélection</span>
+        <h2 class="h-sec">Travaux</h2>
+      </div>
+      <p class="lead">50+ projets livrés. Voici une sélection vérifiée — chacune avec sa fiche détaillée : contexte, périmètre, stack et lien.</p>
+    </div>
+    <div class="work__filters reveal" id="work-filters"></div>
+    <div class="work__grid reveal" id="work-grid"></div>
+  </div>
+</section>
+
+<!-- ============ STUDIO ============ -->
+<section class="section" id="studio" data-screen-label="Studio">
+  <div class="rails"></div>
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div>
+        <span class="idx">Qui</span>
+        <h2 class="h-sec">Le studio</h2>
+      </div>
+    </div>
+    <div class="studio__grid">
+      <div class="studio__photo reveal">
+        <div class="ph">
+          <span class="ph__corner tl"></span><span class="ph__corner tr"></span>
+          <span class="ph__corner bl"></span><span class="ph__corner br"></span>
+          <span class="ph__label">PORTRAIT FIDÈLE SODOGA<br>— FICHIER HAUTE RÉS. À FOURNIR</span>
+        </div>
+        <span class="badge">FIDÈLE SODOGA</span>
+      </div>
+      <div class="studio__body reveal">
+        <h2 class="h-sec" style="font-size:clamp(28px,3.6vw,52px)">Un développeur,<br>pas une boîte noire.</h2>
+        <p>Je m'appelle <strong>Fidèle Sodoga</strong>. Développeur web et mobile freelance, basé au Bénin, je travaille en français avec des marques africaines et la diaspora francophone.</p>
+        <p>Je conçois et je code : sites WordPress, applications Flutter, back-ends Laravel. Un seul interlocuteur du brief à la mise en ligne — vous savez toujours à qui vous parlez.</p>
+        <div class="studio__facts">
+          <div class="studio__fact"><span class="mono">Expérience</span><b>~6 ans <span class="flag">à valider</span></b></div>
+          <div class="studio__fact"><span class="mono">Stack</span><b>WordPress · Laravel · Flutter</b></div>
+          <div class="studio__fact"><span class="mono">Outils</span><b>Figma · PHP · JS</b></div>
+        </div>
+        <div style="margin-top:32px; display:flex; gap:14px; flex-wrap:wrap">
+          <a href="https://fidelesodoga.com" target="_blank" rel="noopener" class="btn">Site perso <span class="arr">↗</span></a>
+          <a href="https://www.linkedin.com/in/fidele-sodoga/" target="_blank" rel="noopener" class="btn">LinkedIn <span class="arr">↗</span></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PROCESS ============ -->
+<section class="section" id="process" data-screen-label="Process">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div>
+        <span class="idx">Comment</span>
+        <h2 class="h-sec">Process</h2>
+      </div>
+      <p class="lead">Un flux simple et lisible. Pas de couches inutiles entre vous et le code.</p>
+    </div>
+    <div class="process__list reveal">
+      <div class="step">
+        <div class="step__num">01 / BRIEF</div>
+        <h3>Cadrage</h3>
+        <p>On part de votre besoin réel. Objectifs, contenu, références — le périmètre est posé noir sur blanc via le formulaire de brief.</p>
+      </div>
+      <div class="step">
+        <div class="step__num">02 / DESIGN</div>
+        <h3>Conception</h3>
+        <p>Architecture, maquettes UI/UX et direction visuelle sur Figma. On valide ensemble avant la moindre ligne de code.</p>
+      </div>
+      <div class="step">
+        <div class="step__num">03 / BUILD</div>
+        <h3>Développement</h3>
+        <p>Intégration et code : WordPress, Laravel ou Flutter selon le projet. Responsive, performant, maintenable.</p>
+      </div>
+      <div class="step">
+        <div class="step__num">04 / SHIP</div>
+        <h3>Livraison</h3>
+        <p>Mise en ligne, tests et prise en main. Vous repartez avec un produit qui fonctionne et que vous savez gérer.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ STATS ============ -->
+<section class="section--tight" id="stats">
+  <div class="wrap">
+    <div class="stats__grid reveal">
+      <div class="stat"><b>50<span class="u">+</span></b><span class="mono">Projets livrés</span></div>
+      <div class="stat"><b>12</b><span class="mono">Études de cas détaillées</span></div>
+      <div class="stat"><b>~6<span class="u">a</span></b><span class="mono">Années d'expérience <span class="flag">à valider</span></span></div>
+      <div class="stat"><b>1</b><span class="mono">Interlocuteur, du début à la fin</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONTACT ============ -->
+<section class="section contact" id="contact" data-screen-label="Contact">
+  <div class="rails"></div>
+  <div class="wrap">
+    <span class="eyebrow reveal" style="display:flex; margin-bottom:28px">Démarrer</span>
+    <h2 class="contact__head reveal">UN PROJET<br><span class="blue">EN TÊTE ?</span></h2>
+    <div class="contact__grid">
+      <div class="reveal">
+        <p class="contact__lead">Décrivez votre besoin via le formulaire de brief, ou écrivez directement sur WhatsApp. Réponse d'un développeur, pas d'un commercial.</p>
+        <div class="contact__cta">
+          <a href="https://forms.gle/HeqoTrc2DM23VLcP6" target="_blank" rel="noopener" class="btn btn--primary btn--lg">Remplir le brief <span class="arr">→</span></a>
+          <a href="https://wa.me/12519108548" target="_blank" rel="noopener" class="btn btn--lg">WhatsApp <span class="arr">↗</span></a>
+          <span class="mono" style="color:var(--ink-3); font-size:11px">TARIFS SUR DEVIS · NUMÉRO WHATSAPP <span class="flag">à confirmer</span></span>
+        </div>
+      </div>
+      <div class="contact__channels reveal">
+        <a class="channel" href="mailto:#"><span><span class="mono">Email pro</span><br><b>[ à fournir ]</b></span> <span class="flag">à fournir</span></a>
+        <a class="channel" href="https://comeup.com/fr/@tech-solux" target="_blank" rel="noopener"><span><span class="mono">Boutique services</span><br><b>comeup.com/@tech-solux</b></span> <span class="arr">↗</span></a>
+        <a class="channel" href="https://www.linkedin.com/in/fidele-sodoga/" target="_blank" rel="noopener"><span><span class="mono">LinkedIn</span><br><b>/in/fidele-sodoga</b></span> <span class="arr">↗</span></a>
+        <a class="channel" href="https://www.instagram.com/fidele_sodoga/" target="_blank" rel="noopener"><span><span class="mono">Instagram</span><br><b>@fidele_sodoga</b></span> <span class="arr">↗</span></a>
+        <a class="channel" href="https://www.facebook.com/fidele.sodoga" target="_blank" rel="noopener"><span><span class="mono">Facebook</span><br><b>fidele.sodoga</b></span> <span class="arr">↗</span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer__top">
+      <div class="footer__big"><a href="#top">TECHSOLUX<span style="color:var(--blue)">.</span></a></div>
+      <div class="footer__cols">
+        <div class="footer__col">
+          <h5>Navigation</h5>
+          <a href="#work">Travaux</a>
+          <a href="#services">Services</a>
+          <a href="#studio">Studio</a>
+          <a href="#process">Process</a>
+          <a href="#contact">Contact</a>
+        </div>
+        <div class="footer__col">
+          <h5>Réseaux</h5>
+          <a href="https://www.linkedin.com/in/fidele-sodoga/" target="_blank" rel="noopener">LinkedIn ↗</a>
+          <a href="https://www.instagram.com/fidele_sodoga/" target="_blank" rel="noopener">Instagram ↗</a>
+          <a href="https://www.facebook.com/fidele.sodoga" target="_blank" rel="noopener">Facebook ↗</a>
+          <a href="https://comeup.com/fr/@tech-solux" target="_blank" rel="noopener">ComeUp ↗</a>
+        </div>
+        <div class="footer__col">
+          <h5>Contact</h5>
+          <a href="https://forms.gle/HeqoTrc2DM23VLcP6" target="_blank" rel="noopener">Formulaire de brief ↗</a>
+          <a href="https://wa.me/12519108548" target="_blank" rel="noopener">WhatsApp ↗</a>
+          <span>Email — [à fournir]</span>
+          <span>Bénin</span>
+        </div>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <span>© 2026 TECHSOLUX — FIDÈLE SODOGA</span>
+      <span>LE PARTENAIRE DIGITAL QU'IL VOUS FAUT</span>
+      <span>TARIFS SUR DEVIS</span>
+    </div>
+  </div>
+</footer>
+
+<!-- libs -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+<!-- app -->
+<script src="assets/projects.js"></script>
+<script src="assets/main.js"></script>
+<script src="assets/hero-carousel.js"></script>
+<script src="assets/tweaks.js"></script>
+
+</body>
+</html>
