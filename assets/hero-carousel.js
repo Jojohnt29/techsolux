@@ -95,20 +95,31 @@
 
   function geom(){
     const W = innerWidth;
-    cardW = Math.min(W*0.52, 820);
-    cardH = cardW*0.62;
-    if(cardH > innerHeight*0.62){ cardH = innerHeight*0.62; cardW = cardH/0.62; }
-    if(W <= 680){ cardW = Math.min(W*0.84, 420); cardH = cardW*0.62; }
+    // Smaller cards so the full ring shape reads on screen
+    cardW = Math.min(W*0.36, 560);
+    cardH = cardW*0.66;
+    if(cardH > innerHeight*0.50){ cardH = innerHeight*0.50; cardW = cardH/0.66; }
+    if(W <= 680){ cardW = Math.min(W*0.72, 360); cardH = cardW*0.66; }
     cards.forEach(c=>{ c.style.width = cardW+'px'; c.style.height = cardH+'px'; });
+
+    // Global ring tilt — see the top of the ring (like a piece of jewelry)
+    const deckInner = document.getElementById('hx-deck');
+    if(deckInner){
+      deckInner.style.transformStyle = 'preserve-3d';
+      deckInner.style.transformOrigin = '50% 50%';
+      deckInner.style.transform = `translateY(-4%) rotateX(${PITCH_DECK}deg)`;
+    }
     render(false);
   }
 
   /* ---------- cylindrical (ring) layout ---------- */
-  // Cards are positioned tangent to a cylinder. Active card faces camera;
-  // neighbors curve away around the ring like jewelry seen from outside.
-  const ANGLE_STEP = 0.46;          // radians between cards (~26°)
-  const R_FACTOR   = 1.35;          // cylinder radius = cardW * this
-  const PITCH      = 6;             // slight constant downward pitch (deg)
+  // All n cards distributed evenly around a full cylinder (360°/n apart).
+  // Active card is at the front of the ring (θ=0), faces camera.
+  // Whole ring is tilted forward so we see its "top" — the jewelry effect.
+  const ANGLE_STEP = (2 * Math.PI) / n;   // 60° for n=6 — full ring
+  const R_FACTOR   = 1.05;                // cylinder radius ≈ cardW (tight band)
+  const PITCH_DECK = -16;                 // global ring tilt (deg) — look down at ring
+  const HIDE_ANGLE = Math.PI * 0.55;      // hide cards past ~100° from front
 
   function render(animate){
     const cur = ((pos % n) + n) % n;
@@ -120,18 +131,23 @@
       if(k < -n/2) k += n;
       const ak = Math.abs(k);
 
-      // Position on cylinder (origin = active card's location)
-      const angle = k * ANGLE_STEP;             // radians
+      // Position on cylinder (origin = active card's location at angle 0)
+      const angle = k * ANGLE_STEP;             // radians from front
+      const aAbs  = Math.abs(angle);
       const tx = R * Math.sin(angle);
-      const tz = R * (Math.cos(angle) - 1);     // ≤ 0 — cards behind active recede
+      const tz = R * (Math.cos(angle) - 1);     // ≤ 0 — cards curve back
       const ry = -angle * 180 / Math.PI;        // face tangent to cylinder
       const sc = 1 - Math.min(ak,3) * 0.04;
 
+      // Hide back of the ring + fade as cards turn away
+      const visible = aAbs < HIDE_ANGLE;
+      const turnFade = Math.max(0, Math.cos(angle));   // 1 at front → 0 at sides
+
       c.style.transform =
         `translate(-50%,-50%) translateX(${tx.toFixed(1)}px) translateZ(${tz.toFixed(1)}px) `+
-        `rotateX(${PITCH}deg) rotateY(${ry.toFixed(2)}deg) scale(${sc.toFixed(3)})`;
-      c.style.opacity = ak<=2 ? '1' : '0';
-      c.style.filter  = ak===0 ? 'none' : `brightness(${(0.65 - ak*0.10).toFixed(2)})`;
+        `rotateY(${ry.toFixed(2)}deg) scale(${sc.toFixed(3)})`;
+      c.style.opacity = visible ? (0.35 + 0.65*turnFade).toFixed(2) : '0';
+      c.style.filter  = ak===0 ? 'none' : `brightness(${(0.50 + 0.35*turnFade).toFixed(2)})`;
       c.style.zIndex  = String(30 - ak);
       c.style.pointerEvents = ak<=1 ? 'auto' : 'none';
       c.classList.toggle('is-active', k===0);
