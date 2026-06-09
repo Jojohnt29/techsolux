@@ -31,70 +31,48 @@
   transform-origin:50% 50%;
 }
 
-/* ---- flat tilted card ---- */
+/* ---- curved card (facets on a cylinder arc) ---- */
 .hx-card{
   position:absolute; top:50%; left:50%;
+  width:0; height:0;
   transform-style:preserve-3d;
-  backface-visibility:hidden;
   transition:transform .85s cubic-bezier(.32,.72,.0,1),
              opacity .55s var(--ease),
              filter .55s var(--ease);
   will-change:transform,opacity;
   opacity:0; pointer-events:none;
-  border-radius:14px;
 }
-.hx-card__frame{
-  position:absolute; inset:0;
-  border-radius:inherit;
-  padding:2px;
-  background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.02));
-  box-shadow:
-    0 60px 140px -40px rgba(0,0,0,.92),
-    0 14px 40px -10px rgba(0,0,0,.55);
+.hx-card__surface{
+  position:absolute; left:0; top:0;
+  width:1px; height:1px;
+  transform-style:preserve-3d;
+  pointer-events:none;
+  overflow:visible;
 }
-.hx-card__inner{
-  position:relative;
-  width:100%; height:100%;
-  border-radius:12px; overflow:hidden;
-  background:linear-gradient(150deg,#141a2e,#0b0f1c 45%,#070a14);
+.hx-seg{
+  position:absolute; left:0; top:0;
+  background-repeat:no-repeat;
+  backface-visibility:hidden;
+  pointer-events:auto;
+  cursor:pointer;
 }
-.hx-card__img{
-  position:absolute; inset:0; width:100%; height:100%;
-  object-fit:cover; display:block;
+.hx-card.is-active .hx-seg{
+  box-shadow:0 0 0 1px rgba(255,255,255,.08);
 }
 .hx-card__fill{
-  position:absolute; inset:0;
   display:grid; place-items:center;
   background:
     radial-gradient(120% 90% at 24% 18%, rgba(110,123,255,.5), transparent 55%),
     repeating-linear-gradient(125deg, rgba(255,255,255,.04) 0 1px, transparent 1px 18px),
     linear-gradient(150deg,#1a2140,#0b0f1c);
+  border-radius:10px;
+  pointer-events:auto; cursor:pointer;
 }
 .hx-card__fill span{
   font-family:"Bowlby One SC", var(--font-display);
   font-size:clamp(28px,4vw,52px);
   letter-spacing:.02em; text-transform:uppercase; color:var(--ink-2);
   text-align:center; padding:0 24px;
-}
-.hx-card__sheen{
-  position:absolute; inset:0; pointer-events:none;
-  background:
-    linear-gradient(110deg, rgba(255,255,255,.08) 0%, transparent 28%),
-    linear-gradient(to bottom, transparent 60%, rgba(5,7,13,.55) 100%);
-  mix-blend-mode:screen;
-}
-
-/* active card — gradient border ring */
-.hx-card.is-active .hx-card__frame{
-  background:linear-gradient(140deg,#9E8BFF 6%,#4353FF 40%,#27C6FF 72%,#A9ECFF 96%);
-  box-shadow:
-    0 80px 160px -40px rgba(0,0,0,.95),
-    0 0 60px -10px rgba(67,83,255,.55),
-    0 14px 40px -10px rgba(0,0,0,.55);
-}
-.hx-card.is-active .hx-card__inner{ border-radius:11px; }
-.hx-card.is-neighbor .hx-card__sheen{
-  background:linear-gradient(to bottom, transparent 50%, rgba(5,7,13,.75) 100%);
 }
 
 /* ---- UI layer ---- */

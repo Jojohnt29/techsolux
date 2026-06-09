@@ -59,17 +59,10 @@
   const nextBtn = document.getElementById('hx-next');
   const fitBorders = ()=>{ border(prevBtn,'circle'); border(nextBtn,'circle'); border(ctaEl,'pill'); };
 
-  /* ---------- build flat tilted cards ---------- */
+  /* ---------- build curved cards (facets on a cylinder arc) ---------- */
   deck.innerHTML = F.map((p,i)=>`
     <article class="hx-card" data-i="${i}">
-      <div class="hx-card__frame">
-        <div class="hx-card__inner">
-          ${p.image
-            ? `<img class="hx-card__img" src="${p.image}" alt="${p.name}" loading="${i===0?'eager':'lazy'}">`
-            : `<div class="hx-card__fill"><span>${p.name}</span></div>`}
-          <div class="hx-card__sheen"></div>
-        </div>
-      </div>
+      <div class="hx-card__surface" data-img="${p.image||''}" data-name="${p.name}"></div>
     </article>`).join('');
   const cards = [...deck.querySelectorAll('.hx-card')];
 
@@ -93,37 +86,81 @@
     );
   }
 
+  /* ---------- ring constants ---------- */
+  // 6 cards × (360°/6) = full closed ring band.
+  // Each card itself is a curved segment built from N vertical facets;
+  // when all 6 segments sit on the same cylinder the facets join into
+  // one continuous ring (the bague effect).
+  const NSEG       = 14;                   // facets per card
+  const ANGLE_STEP = (2 * Math.PI) / n;    // 60° between card centers
+  const FACET_ANGLE = ANGLE_STEP / NSEG;   // ≈ 4.3° per facet
+  const PITCH_DECK = -18;                  // global ring tilt (deg)
+  const HIDE_ANGLE = Math.PI * 0.58;       // past ~104° from front = back of ring
+
+  // Cylinder radius such that adjacent facets exactly butt edge-to-edge.
+  function ringRadius(){
+    const segW = cardW / NSEG;
+    return segW / (2 * Math.sin(FACET_ANGLE / 2));
+  }
+
+  /* ---------- rebuild curved facets (image sliced across N panels) ---------- */
+  function rebuildFacets(){
+    const R = ringRadius();
+    const segW = cardW / NSEG;
+    cards.forEach(card=>{
+      const surface = card.querySelector('.hx-card__surface');
+      const img = surface.dataset.img;
+      const name = surface.dataset.name;
+      // The .hx-card outer needs a zero-sized hit area at its center.
+      card.style.width = '0px'; card.style.height = '0px';
+      if(!img){
+        surface.innerHTML =
+          `<span class="hx-card__fill" style="`+
+          `width:${cardW.toFixed(1)}px;height:${cardH.toFixed(1)}px;`+
+          `transform:translate(-50%,-50%);position:absolute;left:50%;top:50%;">`+
+          `<span>${name}</span></span>`;
+        return;
+      }
+      let html = '';
+      for(let j=0;j<NSEG;j++){
+        // Local arc — same R, so adjacent cards' facets continue smoothly.
+        const localAngle = (j - (NSEG-1)/2) * FACET_ANGLE;
+        const lx  = R * Math.sin(localAngle);
+        const lz  = R * (Math.cos(localAngle) - 1);
+        const lry = -localAngle * 180 / Math.PI;
+        const bgx = -j * segW;
+        html += `<span class="hx-seg" style="`+
+          `width:${(segW+0.6).toFixed(2)}px;height:${cardH.toFixed(1)}px;`+
+          `transform:translate(-50%,-50%) translateX(${lx.toFixed(2)}px) translateZ(${lz.toFixed(2)}px) rotateY(${lry.toFixed(2)}deg);`+
+          `background-image:url('${img}');`+
+          `background-size:${cardW.toFixed(1)}px ${cardH.toFixed(1)}px;`+
+          `background-position:${bgx.toFixed(2)}px 0;"></span>`;
+      }
+      surface.innerHTML = html;
+    });
+  }
+
   function geom(){
     const W = innerWidth;
-    // Smaller cards so the full ring shape reads on screen
-    cardW = Math.min(W*0.36, 560);
+    cardW = Math.min(W*0.34, 520);
     cardH = cardW*0.66;
-    if(cardH > innerHeight*0.50){ cardH = innerHeight*0.50; cardW = cardH/0.66; }
-    if(W <= 680){ cardW = Math.min(W*0.72, 360); cardH = cardW*0.66; }
-    cards.forEach(c=>{ c.style.width = cardW+'px'; c.style.height = cardH+'px'; });
+    if(cardH > innerHeight*0.48){ cardH = innerHeight*0.48; cardW = cardH/0.66; }
+    if(W <= 680){ cardW = Math.min(W*0.66, 320); cardH = cardW*0.66; }
+    rebuildFacets();
 
-    // Global ring tilt — see the top of the ring (like a piece of jewelry)
+    // Global ring tilt — look down at the band like jewelry
     const deckInner = document.getElementById('hx-deck');
     if(deckInner){
       deckInner.style.transformStyle = 'preserve-3d';
       deckInner.style.transformOrigin = '50% 50%';
-      deckInner.style.transform = `translateY(-4%) rotateX(${PITCH_DECK}deg)`;
+      deckInner.style.transform = `rotateX(${PITCH_DECK}deg)`;
     }
     render(false);
   }
 
-  /* ---------- cylindrical (ring) layout ---------- */
-  // All n cards distributed evenly around a full cylinder (360°/n apart).
-  // Active card is at the front of the ring (θ=0), faces camera.
-  // Whole ring is tilted forward so we see its "top" — the jewelry effect.
-  const ANGLE_STEP = (2 * Math.PI) / n;   // 60° for n=6 — full ring
-  const R_FACTOR   = 1.05;                // cylinder radius ≈ cardW (tight band)
-  const PITCH_DECK = -16;                 // global ring tilt (deg) — look down at ring
-  const HIDE_ANGLE = Math.PI * 0.55;      // hide cards past ~100° from front
-
   function render(animate){
     const cur = ((pos % n) + n) % n;
-    const R = cardW * R_FACTOR;
+    const R = ringRadius();
 
     cards.forEach((c,i)=>{
       let k = i - cur;
@@ -131,23 +168,20 @@
       if(k < -n/2) k += n;
       const ak = Math.abs(k);
 
-      // Position on cylinder (origin = active card's location at angle 0)
-      const angle = k * ANGLE_STEP;             // radians from front
+      const angle = k * ANGLE_STEP;
       const aAbs  = Math.abs(angle);
       const tx = R * Math.sin(angle);
-      const tz = R * (Math.cos(angle) - 1);     // ≤ 0 — cards curve back
-      const ry = -angle * 180 / Math.PI;        // face tangent to cylinder
-      const sc = 1 - Math.min(ak,3) * 0.04;
+      const tz = R * (Math.cos(angle) - 1);
+      const ry = -angle * 180 / Math.PI;
 
-      // Hide back of the ring + fade as cards turn away
-      const visible = aAbs < HIDE_ANGLE;
-      const turnFade = Math.max(0, Math.cos(angle));   // 1 at front → 0 at sides
+      const visible  = aAbs < HIDE_ANGLE;
+      const turnFade = Math.max(0, Math.cos(angle));
 
       c.style.transform =
         `translate(-50%,-50%) translateX(${tx.toFixed(1)}px) translateZ(${tz.toFixed(1)}px) `+
-        `rotateY(${ry.toFixed(2)}deg) scale(${sc.toFixed(3)})`;
-      c.style.opacity = visible ? (0.35 + 0.65*turnFade).toFixed(2) : '0';
-      c.style.filter  = ak===0 ? 'none' : `brightness(${(0.50 + 0.35*turnFade).toFixed(2)})`;
+        `rotateY(${ry.toFixed(2)}deg)`;
+      c.style.opacity = visible ? (0.30 + 0.70*turnFade).toFixed(2) : '0';
+      c.style.filter  = ak===0 ? 'none' : `brightness(${(0.50 + 0.45*turnFade).toFixed(2)})`;
       c.style.zIndex  = String(30 - ak);
       c.style.pointerEvents = ak<=1 ? 'auto' : 'none';
       c.classList.toggle('is-active', k===0);
