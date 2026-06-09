@@ -112,13 +112,13 @@
       if(k < -n/2) k += n;
       const ak = Math.abs(k);
 
-      // Coverflow geometry: pushed sideways, slight tilt, faded back
-      const tx = k * cardW * 0.72;
-      const tz = -ak * cardW * 0.13;
-      const ry = -k * 14;        // turn away from center
-      const rx = 6;              // constant slight downward pitch
-      const rz = k * 1.6;        // small roll for stacked-card feel
-      const sc = 1 - Math.min(ak,3) * 0.05;
+      // Coverflow geometry: pushed sideways, strong tilt, faded back
+      const tx = k * cardW * 0.70;
+      const tz = -ak * cardW * 0.18;
+      const ry = -k * 26;        // turn away from center (was 14)
+      const rx = 11;             // constant downward pitch (was 6)
+      const rz = k * 3.4;        // roll for stacked-card feel (was 1.6)
+      const sc = 1 - Math.min(ak,3) * 0.06;
 
       c.style.transform =
         `translate(-50%,-50%) translateX(${tx.toFixed(1)}px) translateZ(${tz.toFixed(1)}px) `+
@@ -204,12 +204,14 @@
     }
     function ringPath(cx, cy, r, distort, time){
       ctx.beginPath();
-      const steps = Math.max(48, Math.min(220, Math.round(r/3)));
+      const steps = Math.max(64, Math.min(260, Math.round(r/2.4)));
       for(let s=0;s<=steps;s++){
         const a = (s/steps)*Math.PI*2;
+        // layered noise: more harmonics + faster drift for visibly turbulent rings
         const noise =
-          Math.sin(a*3 + time*0.0006 + r*0.018) * distort +
-          Math.cos(a*2 + time*0.0004) * (distort*0.55);
+          Math.sin(a*3 + time*0.0009 + r*0.020) * distort +
+          Math.cos(a*5 + time*0.0007 - r*0.012) * (distort*0.70) +
+          Math.sin(a*7 + time*0.0011 + r*0.006) * (distort*0.35);
         const rr = r + noise;
         const x = cx + rr*Math.cos(a);
         const y = cy + rr*Math.sin(a);
@@ -236,14 +238,14 @@
       ctx.fillStyle = halo;
       ctx.fillRect(0,0,w,h);
 
-      // concentric topographic rings
+      // concentric topographic rings — heavier distortion + bolder lines
       const maxR = Math.hypot(w,h);
-      ctx.lineWidth = 1;
-      for(let r=44; r<maxR; r+=46){
-        const d = Math.min(r*0.045, 26);
+      ctx.lineWidth = 1.4;
+      for(let r=44; r<maxR; r+=38){
+        const d = Math.min(r*0.11, 64);                 // distortion 4.5%→11%, cap 26→64
         const dist = Math.min(1, r / (maxR*0.6));
         const fade = 1 - dist;
-        const tint = 0.16*fade + 0.04;
+        const tint = 0.30*fade + 0.07;                  // opacity boost (.16+.04 → .30+.07)
         ctx.strokeStyle = `rgba(150,170,255,${tint.toFixed(3)})`;
         ringPath(cx, cy, r, d, time);
         ctx.stroke();
