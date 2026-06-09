@@ -84,10 +84,6 @@
     <div class="tx-body">
       <div class="tx-sect">Couleur signature</div>
       <div class="tx-sw" id="tx-accent"></div>
-      <div class="tx-sect">Ambiance</div>
-      <div class="tx-seg" data-key="theme">
-        <button data-v="dark">Dark</button><button data-v="light">Béton clair</button>
-      </div>
       <div class="tx-sect">Travaux — disposition</div>
       <div class="tx-seg" data-key="workLayout">
         <button data-v="grid">Grille</button><button data-v="rows">Lignes</button>
