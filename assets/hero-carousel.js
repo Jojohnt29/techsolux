@@ -1,25 +1,25 @@
 /* ============================================================
    TECHSOLUX — hero-carousel.js
-   Showcase 3D des projets : carrousel en perspective + panneau + vignettes.
+   Showcase hero : flat tilted card coverflow + topographic
+   ring background canvas. Original implementation.
    ============================================================ */
 (function(){
   const ALL = window.PROJECTS || [];
-  // projets mis en vedette dans le hero
   const SLUGS = ["paris-beaute","kultu-tv","boutique-informatique","ar-studio-beauty","grand-hiver","ovote"];
   const F = SLUGS.map(s=>ALL.find(p=>p.slug===s)).filter(Boolean);
   if(!F.length) return;
   const n = F.length;
 
-  const deck = document.getElementById('hx-deck');
+  const deck     = document.getElementById('hx-deck');
   const thumbsEl = document.getElementById('hx-thumbs');
-  const dotsEl = document.getElementById('hx-dots');
-  const catEl = document.getElementById('hx-cat');
-  const titleEl = document.getElementById('hx-title');
-  const descEl = document.getElementById('hx-desc');
-  const ctaEl = document.getElementById('hx-cta');
+  const dotsEl   = document.getElementById('hx-dots');
+  const catEl    = document.getElementById('hx-cat');
+  const titleEl  = document.getElementById('hx-title');
+  const descEl   = document.getElementById('hx-desc');
+  const ctaEl    = document.getElementById('hx-cta');
   const ctaLabel = document.getElementById('hx-cta-label');
 
-  // ---- animated gradient SVG borders ----
+  /* ---------- animated gradient SVG borders ---------- */
   const SVGNS = 'http://www.w3.org/2000/svg';
   function ensureDefs(){
     if(document.getElementById('tsx-grad')) return;
@@ -59,103 +59,91 @@
   const nextBtn = document.getElementById('hx-next');
   const fitBorders = ()=>{ border(prevBtn,'circle'); border(nextBtn,'circle'); border(ctaEl,'pill'); };
 
-  const bigName = name => {
-    const w = name.split(' ');
-    return w.length>1 ? `${w[0]} <b>${w.slice(1).join(' ')}</b>` : `<b>${name}</b>`;
-  };
-
-  // ---- build cards (curved full-bleed surface) ----
+  /* ---------- build flat tilted cards ---------- */
   deck.innerHTML = F.map((p,i)=>`
     <article class="hx-card" data-i="${i}">
-      <div class="hx-card__inner">
-        <div class="hx-card__surface" data-img="${p.image||''}">${p.image?'':'<div class="hx-card__fill"></div>'}</div>
-        <div class="hx-card__shade"></div>
+      <div class="hx-card__frame">
+        <div class="hx-card__inner">
+          ${p.image
+            ? `<img class="hx-card__img" src="${p.image}" alt="${p.name}" loading="${i===0?'eager':'lazy'}">`
+            : `<div class="hx-card__fill"><span>${p.name}</span></div>`}
+          <div class="hx-card__sheen"></div>
+        </div>
       </div>
     </article>`).join('');
   const cards = [...deck.querySelectorAll('.hx-card')];
 
-  // ---- build thumbs ----
+  /* ---------- build thumbs ---------- */
   thumbsEl.innerHTML = F.map((p,i)=>`<button class="hx__thumb" data-i="${i}" aria-label="${p.name}">${p.image?`<img src="${p.image}" alt="">`:`<span>${p.num}</span>`}<i class="hx__thumb-bar"></i></button>`).join('');
   const thumbs = [...thumbsEl.querySelectorAll('.hx__thumb')];
 
-  // ---- build dots ----
+  /* ---------- build dots ---------- */
   dotsEl.innerHTML = F.map((_,i)=>`<i data-i="${i}"></i>`).join('');
   const dots = [...dotsEl.querySelectorAll('i')];
 
-  // ---- state ----
+  /* ---------- state ---------- */
   let pos = parseInt(localStorage.getItem('tsx-hero')||'0',10); if(isNaN(pos)) pos = 0;
   let cardW=0, cardH=0;
 
   function fade(el){
-    // anime UNIQUEMENT transform/flou (jamais l'opacité) : si la timeline est
-    // en pause (onglet hors focus), le texte reste lisible au lieu de disparaître.
     if(!el.animate) return;
-    el.animate([{transform:'translateY(16px)', filter:'blur(5px)'},{transform:'none', filter:'blur(0)'}],
-      {duration:560, easing:'cubic-bezier(.22,.61,.36,1)'});
-  }
-
-  // ---- curved card surface : vertical facets on a cylinder arc ----
-  const NSEG = 9;
-  function buildCurves(){
-    const R = cardW * 2.3;          // grand rayon = courbe douce et convexe
-    const segW = cardW / NSEG;
-    cards.forEach(c=>{
-      const surface = c.querySelector('.hx-card__surface');
-      const img = surface.dataset.img;
-      if(!img) return;              // fallback "fill" reste plat
-      let html = '';
-      for(let i=0;i<NSEG;i++){
-        const theta = (i - (NSEG-1)/2) * (segW / R);   // radians, centre de la facette
-        const x = R*Math.sin(theta);
-        const z = R*Math.cos(theta) - R;               // <=0 : les bords reculent
-        const deg = theta*180/Math.PI;
-        const bgx = -(i*segW);
-        html += `<span class="hx-seg" style="width:${(segW+0.8).toFixed(2)}px;height:${cardH.toFixed(1)}px;`+
-          `transform:translate(-50%,-50%) translateX(${x.toFixed(2)}px) translateZ(${z.toFixed(2)}px) rotateY(${deg.toFixed(2)}deg);`+
-          `background-image:url('${img}');background-size:${cardW.toFixed(1)}px ${cardH.toFixed(1)}px;`+
-          `background-position:${bgx.toFixed(2)}px 0;"></span>`;
-      }
-      surface.innerHTML = html;
-    });
+    el.animate(
+      [{transform:'translateY(14px)', filter:'blur(6px)'},{transform:'none', filter:'blur(0)'}],
+      {duration:560, easing:'cubic-bezier(.22,.61,.36,1)'}
+    );
   }
 
   function geom(){
-    cardW = Math.min(innerWidth*0.62, 940);
-    cardH = cardW/1.5;
-    if(cardH > innerHeight*0.7){ cardH = innerHeight*0.7; cardW = cardH*1.5; }
-    cards.forEach(c=>{ c.style.width=cardW+'px'; c.style.height=cardH+'px'; });
-    buildCurves();
+    const W = innerWidth;
+    cardW = Math.min(W*0.52, 820);
+    cardH = cardW*0.62;
+    if(cardH > innerHeight*0.62){ cardH = innerHeight*0.62; cardW = cardH/0.62; }
+    if(W <= 680){ cardW = Math.min(W*0.84, 420); cardH = cardW*0.62; }
+    cards.forEach(c=>{ c.style.width = cardW+'px'; c.style.height = cardH+'px'; });
     render(false);
   }
 
+  /* ---------- coverflow layout (flat tilted cards) ---------- */
   function render(animate){
     const cur = ((pos % n) + n) % n;
     cards.forEach((c,i)=>{
-      let k = i - cur; if(k > n/2) k -= n; if(k < -n/2) k += n;   // décalage circulaire signé
+      let k = i - cur;
+      if(k >  n/2) k -= n;
+      if(k < -n/2) k += n;
       const ak = Math.abs(k);
-      // convex fan / coverflow arc
-      const ry = -k * 17;
-      const tx = k * cardW * 0.66;
-      const tz = -ak * cardW * 0.16;
-      const sc = 1 - Math.min(ak,3) * 0.06;
-      c.style.transform = `translate(-50%,-50%) translateX(${tx.toFixed(1)}px) translateZ(${tz.toFixed(1)}px) rotateY(${ry}deg) scale(${sc.toFixed(3)})`;
+
+      // Coverflow geometry: pushed sideways, slight tilt, faded back
+      const tx = k * cardW * 0.72;
+      const tz = -ak * cardW * 0.13;
+      const ry = -k * 14;        // turn away from center
+      const rx = 6;              // constant slight downward pitch
+      const rz = k * 1.6;        // small roll for stacked-card feel
+      const sc = 1 - Math.min(ak,3) * 0.05;
+
+      c.style.transform =
+        `translate(-50%,-50%) translateX(${tx.toFixed(1)}px) translateZ(${tz.toFixed(1)}px) `+
+        `rotateX(${rx}deg) rotateY(${ry}deg) rotateZ(${rz}deg) scale(${sc.toFixed(3)})`;
       c.style.opacity = ak<=2 ? '1' : '0';
-      c.style.filter  = ak===0 ? 'none' : `brightness(${ak===1?0.6:0.42})`;
+      c.style.filter  = ak===0 ? 'none' : `brightness(${(0.72 - ak*0.10).toFixed(2)})`;
       c.style.zIndex  = String(30 - ak);
       c.style.pointerEvents = ak<=1 ? 'auto' : 'none';
       c.classList.toggle('is-active', k===0);
+      c.classList.toggle('is-neighbor', ak===1);
     });
     thumbs.forEach((t,i)=>t.classList.toggle('is-active', i===cur));
     dots.forEach((d,i)=>d.classList.toggle('on', i===cur));
+
     const p = F[cur];
-    catEl.textContent = p.type + ' · ' + p.sector;
-    titleEl.innerHTML = bigName(p.name);
+    catEl.textContent = (p.type + ' · ' + p.sector).toUpperCase();
+    titleEl.innerHTML = p.name;
     descEl.textContent = p.tagline;
     ctaEl.href = `case-study.html?p=${p.slug}`;
     ctaLabel.textContent = p.cat==='mobile' ? "Voir l'app" : "Voir le projet";
     if(animate) [catEl,titleEl,descEl].forEach(fade);
     border(ctaEl,'pill');
     localStorage.setItem('tsx-hero', String(pos));
+
+    setBgFocus(cur);
   }
 
   const next = ()=>{ pos++; render(true); };
@@ -173,7 +161,14 @@
   }));
   cards.forEach(c=>c.style.pointerEvents='auto');
 
-  // ---- autoplay ----
+  // keyboard navigation
+  addEventListener('keydown', e=>{
+    if(e.target.closest('input,textarea')) return;
+    if(e.key==='ArrowDown'||e.key==='ArrowRight'){ next(); restart(); }
+    else if(e.key==='ArrowUp'||e.key==='ArrowLeft'){ prev(); restart(); }
+  });
+
+  /* ---------- autoplay ---------- */
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   let timer=null;
   function restart(){ if(timer) clearInterval(timer); if(!reduce) timer=setInterval(next, 5200); }
@@ -181,67 +176,98 @@
   hero.addEventListener('pointerenter', ()=>{ hero.classList.add('is-paused'); if(timer){clearInterval(timer); timer=null;} });
   hero.addEventListener('pointerleave', ()=>{ hero.classList.remove('is-paused'); restart(); });
 
-  geom();
-  fitBorders();
-  addEventListener('resize', ()=>{ geom(); fitBorders(); });
-  restart();
+  /* ============================================================
+     TOPOGRAPHIC RING BACKGROUND CANVAS
+     Concentric distorted rings centered on a focal point that
+     shifts per slide + soft mouse parallax.
+     ============================================================ */
+  let focusTarget = {x:0.62, y:0.46}, focus = {...focusTarget};
+  const FOCAL = [
+    {x:0.30,y:0.55}, {x:0.46,y:0.40}, {x:0.62,y:0.48},
+    {x:0.74,y:0.42}, {x:0.55,y:0.58}, {x:0.40,y:0.46}
+  ];
+  function setBgFocus(i){ focusTarget = FOCAL[i % FOCAL.length] || focusTarget; }
+  setBgFocus(((pos%n)+n)%n);
 
-  // ---- animated canvas particle field + mouse parallax ----
-  (function canvasBg(){
+  (function topoBg(){
     const cv = document.getElementById('hx-canvas'); if(!cv) return;
     const ctx = cv.getContext('2d');
-    let w=0, h=0, dpr=1, parts=[], raf=null;
+    let w=0, h=0, dpr=1, raf=null;
     const mouse = { x:.5, y:.5, tx:.5, ty:.5 };
-    const LINK = 132;
-    function init(){
-      const n = Math.round(Math.min(130, (w*h)/13000));
-      parts = [];
-      for(let i=0;i<n;i++) parts.push({
-        x:Math.random()*w, y:Math.random()*h,
-        vx:(Math.random()-.5)*.26, vy:(Math.random()-.5)*.26,
-        r:Math.random()*1.5+.6
-      });
-    }
+
     function size(){
       dpr = Math.min(devicePixelRatio||1, 2);
       const r = cv.getBoundingClientRect();
       w = r.width; h = r.height;
       cv.width = Math.max(1,w*dpr); cv.height = Math.max(1,h*dpr);
       ctx.setTransform(dpr,0,0,dpr,0,0);
-      init();
     }
-    function frame(){
-      mouse.x += (mouse.tx-mouse.x)*.06; mouse.y += (mouse.ty-mouse.y)*.06;
-      const ox=(mouse.x-.5)*46, oy=(mouse.y-.5)*46;
+    function ringPath(cx, cy, r, distort, time){
+      ctx.beginPath();
+      const steps = Math.max(48, Math.min(220, Math.round(r/3)));
+      for(let s=0;s<=steps;s++){
+        const a = (s/steps)*Math.PI*2;
+        const noise =
+          Math.sin(a*3 + time*0.0006 + r*0.018) * distort +
+          Math.cos(a*2 + time*0.0004) * (distort*0.55);
+        const rr = r + noise;
+        const x = cx + rr*Math.cos(a);
+        const y = cy + rr*Math.sin(a);
+        if(s===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+      }
+      ctx.closePath();
+    }
+    function frame(time){
+      focus.x += (focusTarget.x - focus.x) * 0.04;
+      focus.y += (focusTarget.y - focus.y) * 0.04;
+      mouse.x += (mouse.tx - mouse.x) * 0.05;
+      mouse.y += (mouse.ty - mouse.y) * 0.05;
+
+      const cx = w * (focus.x + (mouse.x-.5)*0.05);
+      const cy = h * (focus.y + (mouse.y-.5)*0.05);
+
       ctx.clearRect(0,0,w,h);
-      for(const p of parts){
-        p.x+=p.vx; p.y+=p.vy;
-        if(p.x<0||p.x>w) p.vx*=-1;
-        if(p.y<0||p.y>h) p.vy*=-1;
+
+      // soft glow halo around focal point
+      const halo = ctx.createRadialGradient(cx,cy,0, cx,cy, Math.max(w,h)*0.55);
+      halo.addColorStop(0,   'rgba(67,83,255,0.22)');
+      halo.addColorStop(0.45,'rgba(40,52,150,0.08)');
+      halo.addColorStop(1,   'rgba(7,8,11,0)');
+      ctx.fillStyle = halo;
+      ctx.fillRect(0,0,w,h);
+
+      // concentric topographic rings
+      const maxR = Math.hypot(w,h);
+      ctx.lineWidth = 1;
+      for(let r=44; r<maxR; r+=46){
+        const d = Math.min(r*0.045, 26);
+        const dist = Math.min(1, r / (maxR*0.6));
+        const fade = 1 - dist;
+        const tint = 0.16*fade + 0.04;
+        ctx.strokeStyle = `rgba(150,170,255,${tint.toFixed(3)})`;
+        ringPath(cx, cy, r, d, time);
+        ctx.stroke();
       }
-      for(let i=0;i<parts.length;i++){
-        const a=parts[i];
-        for(let j=i+1;j<parts.length;j++){
-          const b=parts[j], dx=a.x-b.x, dy=a.y-b.y, d=Math.hypot(dx,dy);
-          if(d<LINK){
-            ctx.strokeStyle=`rgba(96,118,255,${((1-d/LINK)*.5).toFixed(3)})`;
-            ctx.lineWidth=.6;
-            ctx.beginPath(); ctx.moveTo(a.x+ox,a.y+oy); ctx.lineTo(b.x+ox,b.y+oy); ctx.stroke();
-          }
-        }
-      }
-      for(const p of parts){
-        ctx.fillStyle='rgba(150,170,255,.72)';
-        ctx.beginPath(); ctx.arc(p.x+ox,p.y+oy,p.r,0,6.2832); ctx.fill();
-      }
-      raf=requestAnimationFrame(frame);
+
+      // accent ring near focal point
+      ctx.lineWidth = 1.4;
+      ctx.strokeStyle = 'rgba(110,123,255,0.55)';
+      ringPath(cx, cy, 120 + Math.sin(time*0.001)*4, 6, time);
+      ctx.stroke();
+
+      raf = requestAnimationFrame(frame);
     }
     size();
     addEventListener('resize', size);
     addEventListener('pointermove', e=>{ mouse.tx=e.clientX/innerWidth; mouse.ty=e.clientY/innerHeight; }, {passive:true});
-    if(reduce){ // static single frame
-      ctx.clearRect(0,0,w,h);
-      for(const p of parts){ ctx.fillStyle='rgba(150,170,255,.55)'; ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,6.2832); ctx.fill(); }
-    } else { frame(); }
+    if(reduce){ /* static */ }
+    else { raf = requestAnimationFrame(frame); }
   })();
+
+  /* ---------- init ---------- */
+  geom();
+  fitBorders();
+  addEventListener('resize', ()=>{ geom(); fitBorders(); });
+  restart();
+
 })();
