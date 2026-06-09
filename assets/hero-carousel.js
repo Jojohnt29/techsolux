@@ -103,28 +103,35 @@
     render(false);
   }
 
-  /* ---------- coverflow layout (flat tilted cards) ---------- */
+  /* ---------- cylindrical (ring) layout ---------- */
+  // Cards are positioned tangent to a cylinder. Active card faces camera;
+  // neighbors curve away around the ring like jewelry seen from outside.
+  const ANGLE_STEP = 0.46;          // radians between cards (~26°)
+  const R_FACTOR   = 1.35;          // cylinder radius = cardW * this
+  const PITCH      = 6;             // slight constant downward pitch (deg)
+
   function render(animate){
     const cur = ((pos % n) + n) % n;
+    const R = cardW * R_FACTOR;
+
     cards.forEach((c,i)=>{
       let k = i - cur;
       if(k >  n/2) k -= n;
       if(k < -n/2) k += n;
       const ak = Math.abs(k);
 
-      // Coverflow geometry: pushed sideways, strong tilt, faded back
-      const tx = k * cardW * 0.70;
-      const tz = -ak * cardW * 0.18;
-      const ry = -k * 26;        // turn away from center (was 14)
-      const rx = 11;             // constant downward pitch (was 6)
-      const rz = k * 3.4;        // roll for stacked-card feel (was 1.6)
-      const sc = 1 - Math.min(ak,3) * 0.06;
+      // Position on cylinder (origin = active card's location)
+      const angle = k * ANGLE_STEP;             // radians
+      const tx = R * Math.sin(angle);
+      const tz = R * (Math.cos(angle) - 1);     // ≤ 0 — cards behind active recede
+      const ry = -angle * 180 / Math.PI;        // face tangent to cylinder
+      const sc = 1 - Math.min(ak,3) * 0.04;
 
       c.style.transform =
         `translate(-50%,-50%) translateX(${tx.toFixed(1)}px) translateZ(${tz.toFixed(1)}px) `+
-        `rotateX(${rx}deg) rotateY(${ry}deg) rotateZ(${rz}deg) scale(${sc.toFixed(3)})`;
+        `rotateX(${PITCH}deg) rotateY(${ry.toFixed(2)}deg) scale(${sc.toFixed(3)})`;
       c.style.opacity = ak<=2 ? '1' : '0';
-      c.style.filter  = ak===0 ? 'none' : `brightness(${(0.72 - ak*0.10).toFixed(2)})`;
+      c.style.filter  = ak===0 ? 'none' : `brightness(${(0.65 - ak*0.10).toFixed(2)})`;
       c.style.zIndex  = String(30 - ak);
       c.style.pointerEvents = ak<=1 ? 'auto' : 'none';
       c.classList.toggle('is-active', k===0);
