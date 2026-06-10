@@ -6,6 +6,18 @@
       "runtimeExecutable": "python",
       "runtimeArgs": ["-m", "http.server", "5173"],
       "port": 5173
+    },
+    {
+      "name": "apechain",
+      "runtimeExecutable": "node",
+      "runtimeArgs": [
+        "D:/TAFF CLAUDE/apechain-clone/node_modules/next/dist/bin/next",
+        "dev",
+        "D:/TAFF CLAUDE/apechain-clone",
+        "-p",
+        "3000"
+      ],
+      "port": 3000
     }
   ]
 }

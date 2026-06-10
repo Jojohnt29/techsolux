@@ -7,7 +7,7 @@
 <meta name="description" content="TechSolux — studio digital au Bénin. Sites web, applications mobiles et identité de marque, conçus et codés par Fidèle Sodoga.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=Bowlby+One+SC&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/base.css">
 <link rel="stylesheet" href="assets/landing.css">
 <link rel="stylesheet" href="assets/hero-show.css">
@@ -43,29 +43,75 @@
   <a href="#contact" data-target="contact"><span class="dex__n">07</span><i></i></a>
 </nav>
 
-<!-- ============ HERO (showcase carrousel) ============ -->
-<section class="hero hx" id="top" data-screen-label="Hero">
-  <canvas class="hx__canvas" id="hx-canvas" aria-hidden="true"></canvas>
-  <div class="hx__glow"></div>
-  <div class="hx__deck"><div class="hx__deck-inner" id="hx-deck"></div></div>
-  <div class="hx__ui">
-    <div class="hx__panel">
-      <div class="hx__badges">
-        <span class="hx__hot"><i></i>Vedette</span>
-        <span class="hx__cat" id="hx-cat"></span>
+<!-- ============ HERO (ApeChain-style WebGL card wheel) ============ -->
+<section class="hxa" id="top" data-screen-label="Hero">
+  <!-- per-slide gradient layers (cross-fade) -->
+  <div class="hxa__bg" id="hxa-bg"></div>
+  <!-- topographic contour lines (WebGL2) -->
+  <canvas class="hxa__contour" id="hxa-contour" aria-hidden="true"></canvas>
+  <!-- bent-card wheel (WebGL2, draggable) -->
+  <canvas class="hxa__wheel" id="hxa-wheel" aria-label="Carrousel des projets"></canvas>
+
+  <!-- prev / next (right edge) -->
+  <div class="hxa__nav">
+    <button class="hxa__navbtn" id="hxa-next" type="button" aria-label="Projet suivant">
+      <svg class="ring" width="96" height="96" viewBox="0 0 96 96" aria-hidden="true">
+        <defs>
+          <linearGradient id="hxa-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="10%" stop-color="#A281FF"/><stop offset="33%" stop-color="#EB8280"/>
+            <stop offset="66%" stop-color="#EBBF9A"/><stop offset="90%" stop-color="#89D0FF"/>
+          </linearGradient>
+          <radialGradient id="hxa-fill" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse"
+            gradientTransform="translate(157.5 40.5) rotate(60.79) scale(92.22 67.8)">
+            <stop stop-color="#00A7FA"/><stop offset="1" stop-color="#0054FA"/>
+          </radialGradient>
+        </defs>
+        <circle class="echo" cx="48" cy="48" r="40" stroke="url(#hxa-grad)" stroke-width="2" fill="none"/>
+        <circle cx="48" cy="48" r="32" stroke="url(#hxa-grad)" stroke-width="2" fill="none"/>
+        <circle class="fill" cx="48" cy="48" r="32" stroke="url(#hxa-grad)" stroke-width="4" fill="url(#hxa-fill)"/>
+      </svg>
+      <svg class="tri" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M12.5 6.134a1 1 0 0 1 0 1.732L5 12.196a1 1 0 0 1-1.5-.866V2.67A1 1 0 0 1 5 1.802l7.5 4.33Z" transform="rotate(90 7 7)"/></svg>
+    </button>
+    <button class="hxa__navbtn" id="hxa-prev" type="button" aria-label="Projet précédent">
+      <svg class="ring" width="96" height="96" viewBox="0 0 96 96" aria-hidden="true">
+        <circle class="echo" cx="48" cy="48" r="40" stroke="url(#hxa-grad)" stroke-width="2" fill="none"/>
+        <circle cx="48" cy="48" r="32" stroke="url(#hxa-grad)" stroke-width="2" fill="none"/>
+        <circle class="fill" cx="48" cy="48" r="32" stroke="url(#hxa-grad)" stroke-width="4" fill="url(#hxa-fill)"/>
+      </svg>
+      <svg class="tri" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M12.5 6.134a1 1 0 0 1 0 1.732L5 12.196a1 1 0 0 1-1.5-.866V2.67A1 1 0 0 1 5 1.802l7.5 4.33Z" transform="rotate(-90 7 7)"/></svg>
+    </button>
+  </div>
+
+  <!-- bottom overlay -->
+  <div class="hxa__overlay">
+    <div class="hxa__left">
+      <div class="hxa__hot">
+        <svg class="hxa__fire" viewBox="0 0 21 28" aria-hidden="true">
+          <defs>
+            <linearGradient id="hxa-fire" x1="14" y1="2" x2="7" y2="27" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#FD23E9"/><stop offset="0.4" stop-color="#FE3041"/>
+              <stop offset="0.84" stop-color="#FDEE3F"/><stop offset="1" stop-color="#FFFFDD"/>
+            </linearGradient>
+          </defs>
+          <path fill="url(#hxa-fire)" d="M19.76 17.43c.43 3-.35 5.66-2.8 7.58-3.46 2.71-7.35 3.18-11.39 1.54C2.18 25.18.41 22.19.5 18.55c.08-3.28 1.6-5.85 3.86-8a8 8 0 0 0 .36-.34l.58-.52.23.74c.05.15.09.28.12.4.07.23.13.42.21.61.2.49.48.79.82.95.34.16.8.21 1.4.07.88-.2 1.37-.85 1.3-1.58a6 6 0 0 0-.35-1.18l-.01-.01c-.06-.14-.12-.28-.18-.43-.37-.85-.78-1.79-.82-2.85a3.6 3.6 0 0 1 1.25-2.5c.8-.76 1.73-1.28 2.78-1.73l.96-.42-.28 1.01-.09.45c-.35 1.07-.58 2.06-.39 3.1.2 1.11 1.35 1.87 2.34 1.62.51-.13.85-.46 1.13-1.12l.3-.74.53.6c.09.1.18.2.27.3.22.23.43.47.61.71 1.05 1.37 1.57 2.96.94 4.74-.4 1.12-1.22 1.92-1.95 2.63l-.31.31-.04.04c-.53.5-.98 1.08-1.35 1.7-.33.59-.27 1.2.21 1.73.48.53 1.1.66 1.85.47.63-.16 1.09-.6 1.6-1.21l.72-.86Z"/>
+        </svg>
+        <span class="hxa__hotword">Hot</span>
+        <span class="hxa__cat hxa-reveal" id="hxa-cat"></span>
       </div>
-      <h1 class="hx__title" id="hx-title"></h1>
-      <p class="hx__desc" id="hx-desc"></p>
-      <a class="hx__cta gbtn" id="hx-cta" href="#work"><span id="hx-cta-label">Voir le projet</span> <span class="arr">→</span></a>
-      <div class="hx__dots" id="hx-dots"></div>
+      <h1 class="hxa__title hxa-reveal" id="hxa-title"></h1>
+      <p class="hxa__desc hxa-reveal" id="hxa-desc"></p>
+      <a class="hxa__cta" id="hxa-cta" href="#work">
+        <svg class="ring" width="188" height="74" viewBox="0 0 188 74" aria-hidden="true">
+          <rect x="15" y="15" width="158" height="44" rx="17" stroke="url(#hxa-grad)" stroke-width="2" fill="none" opacity="0.9"/>
+          <rect class="glow" x="15" y="15" width="158" height="44" rx="17" stroke="url(#hxa-grad)" stroke-width="4" fill="none"/>
+        </svg>
+        <span class="pill"><span class="lbl" id="hxa-cta-label">Voir le projet</span></span>
+      </a>
     </div>
-    <div class="hx__nav">
-      <button class="hx__navbtn gbtn" id="hx-prev" aria-label="Projet précédent"><span>▲</span></button>
-      <button class="hx__navbtn gbtn" id="hx-next" aria-label="Projet suivant"><span>▼</span></button>
-    </div>
-    <div class="hx__rail">
-      <a class="hx__all" href="#work">Voir tous les projets <span class="arr">▸</span></a>
-      <div class="hx__thumbs" id="hx-thumbs"></div>
+
+    <div class="hxa__right">
+      <a class="hxa__all" href="#work">Voir tous les projets ▸</a>
+      <div class="hxa__thumbs" id="hxa-thumbs"></div>
     </div>
   </div>
 </section>
@@ -276,7 +322,7 @@
 <!-- app -->
 <script src="assets/projects.js"></script>
 <script src="assets/main.js"></script>
-<script src="assets/hero-carousel.js"></script>
+<script src="assets/hero-ape.js"></script>
 <script src="assets/tweaks.js"></script>
 
 </body>
