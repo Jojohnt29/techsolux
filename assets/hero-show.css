@@ -175,8 +175,25 @@
 
 /* ---- mobile ---- */
 @media (max-width:767px){
-  .hxa__overlay{ flex-direction:column; align-items:center; text-align:center; gap:24px; }
-  .hxa__left{ align-items:center; max-width:none; }
+  /* the wheel sits in the upper area (engine raises it on mobile);
+     the whole text block is pushed to the BOTTOM of the hero, below it */
+  .hxa__overlay{
+    flex-direction:column;
+    align-items:center;
+    justify-content:flex-end;     /* stack at the bottom, not space-between */
+    text-align:center;
+    gap:18px;
+    padding-top:88px;
+    padding-bottom:24px;
+  }
+  .hxa__left{ align-items:center; max-width:none; width:100%; gap:12px; }
+  .hxa__hot{ justify-content:center; }
+  .hxa__title{ font-size:clamp(38px,11vw,60px); line-height:.92; }
   .hxa__desc{ margin-inline:auto; }
-  .hxa__right{ align-items:center; margin-left:0; }
+  .hxa__cta{ margin-top:4px; }
+  .hxa__right{ align-items:center; margin-left:0; width:100%; gap:12px; }
+  /* deepen the bottom scrim so the bottom-anchored text stays readable */
+  .hxa::after{
+    background:linear-gradient(to top, rgba(7,8,11,.92) 0%, rgba(7,8,11,.55) 34%, transparent 62%);
+  }
 }
