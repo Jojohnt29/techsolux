@@ -232,23 +232,69 @@ h1,h2,h3,h4{ margin:0; font-family:var(--font-display); font-weight:400; line-he
   .nav__burger span{ width:24px; height:2px; background:var(--ink); transition:.3s; }
 }
 
-/* ============================================================
-   FOOTER
-   ============================================================ */
-.footer{ border-top:1px solid var(--line); padding-block:clamp(60px,8vw,110px) 40px; position:relative; }
-.footer__top{ display:flex; justify-content:space-between; gap:48px; flex-wrap:wrap; align-items:flex-start; }
-.footer__big{ font-family:var(--font-display); font-size:clamp(40px,8vw,120px); line-height:.9; letter-spacing:0; text-transform:uppercase; font-weight:400; }
-.footer__big a{ transition:color .3s; }
-.footer__big a:hover{ color:var(--blue-2); }
-.footer__cols{ display:flex; gap:clamp(40px,7vw,110px); flex-wrap:wrap; }
-.footer__col h5{ font-family:var(--font-mono); font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--ink-3); margin:0 0 16px; font-weight:500; }
-.footer__col a, .footer__col span{ display:block; font-size:15px; color:var(--ink-2); margin-bottom:11px; transition:color .25s; }
-.footer__col a:hover{ color:var(--ink); }
-.footer__bottom{
-  display:flex; justify-content:space-between; gap:20px; flex-wrap:wrap;
-  margin-top:clamp(50px,7vw,90px); padding-top:28px; border-top:1px solid var(--line);
-  font-family:var(--font-mono); font-size:11px; letter-spacing:.06em; color:var(--ink-3); text-transform:uppercase;
+/* ---- button glow on hover (ApeChain blurred gradient ring) ---- */
+.btn::after{
+  content:""; position:absolute; inset:0; border-radius:inherit; padding:1.5px;
+  background:var(--grad-ring);
+  -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+          mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor; mask-composite:exclude;
+  filter:blur(5px); opacity:0; transition:opacity .3s var(--ease); pointer-events:none;
 }
+.btn:hover::after{ opacity:.85; }
+
+/* ---- rolling label (ApeChain UILink/UIBtn) ---- */
+.roll{ position:relative; display:inline-flex; overflow:hidden; vertical-align:bottom; line-height:1.2; }
+.roll span{ display:block; transition:transform .32s cubic-bezier(.33,1,.68,1); }
+.roll span:last-child{ position:absolute; left:0; top:100%; color:var(--blue-2); }
+.roll:hover span{ transform:translateY(-100%); }
+
+/* ============================================================
+   FOOTER — ApeChain field: blue→navy→black + cursor-reactive
+   contour rings + project mosaic + chromatic TECHSOLUX wordmark
+   ============================================================ */
+.tsf{
+  position:relative; overflow:clip; color:#fff;
+  background:linear-gradient(180deg,#0958E5 0%,#0A3BB4 28%,#030A21 62%,#000 88%);
+}
+.tsf__contour{ position:absolute; inset:0; z-index:0; width:100%; height:100%; display:block; pointer-events:none; }
+.tsf__mosaic{
+  position:absolute; left:0; right:0; bottom:0; z-index:0; height:clamp(120px,18vw,220px);
+  display:flex; gap:6px; opacity:.15; pointer-events:none; overflow:hidden;
+  -webkit-mask-image:linear-gradient(to top, #000 10%, transparent 100%);
+          mask-image:linear-gradient(to top, #000 10%, transparent 100%);
+}
+.tsf__mosaic span{ flex:0 0 clamp(160px,18vw,260px); background-size:cover; background-position:center; border-radius:8px; }
+.tsf__inner{ position:relative; z-index:10; padding-top:48px; }
+.tsf__cols{ display:flex; flex-direction:column; gap:40px; padding:88px var(--gutter) 18px; }
+@media (min-width:768px){ .tsf__cols{ flex-direction:row; justify-content:flex-end; gap:24px; padding-top:80px; } }
+@media (min-width:768px){ .tsf__col{ width:172px; } }
+.tsf__col h5{ font-family:var(--font-display); font-size:26px; font-weight:400; text-transform:uppercase; line-height:1; margin:0 0 22px; color:#fff; }
+.tsf__col ul{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:16px; }
+.tsf__col li a{ font-family:var(--font-mono); font-size:12px; text-transform:uppercase; letter-spacing:.02em; line-height:14px; color:#fff; }
+
+/* chromatic cursor-reactive wordmark */
+.tsf__wordzone{ position:relative; width:100%; padding-inline:var(--gutter); }
+.tsf__word{
+  position:relative; width:100%; text-align:center;
+  font-family:var(--font-display); text-transform:uppercase; line-height:.8;
+  font-size:clamp(58px,20vw,340px); letter-spacing:-.01em; user-select:none;
+}
+.tsf-word__l{ display:block; }
+.tsf-word__base{ position:relative; color:#fff; }
+.tsf-word__r,.tsf-word__g,.tsf-word__b{ position:absolute; inset:0; mix-blend-mode:screen; pointer-events:none; will-change:transform; }
+.tsf-word__r{ color:#ff1f1f; }
+.tsf-word__g{ color:#1fff5a; }
+.tsf-word__b{ color:#2b6bff; }
+
+/* legal bar */
+.tsf__legal{
+  display:flex; flex-direction:column-reverse; align-items:center; gap:16px;
+  padding:24px var(--gutter) 22px;
+  font-family:var(--font-mono); font-size:11px; text-transform:uppercase; letter-spacing:.04em; color:#fff;
+}
+@media (min-width:768px){ .tsf__legal{ flex-direction:row; justify-content:space-between; gap:0; } }
+.tsf__legal-links{ display:flex; align-items:center; gap:8px; }
 
 /* ---- reveal (GSAP fallback = visible) ---- */
 .reveal{ will-change:transform,opacity; }

@@ -277,40 +277,53 @@
   </div>
 </section>
 
-<!-- ============ FOOTER ============ -->
-<footer class="footer">
-  <div class="wrap">
-    <div class="footer__top">
-      <div class="footer__big"><a href="#top">TECHSOLUX<span style="color:var(--blue)">.</span></a></div>
-      <div class="footer__cols">
-        <div class="footer__col">
-          <h5>Navigation</h5>
-          <a href="#work">Travaux</a>
-          <a href="#services">Services</a>
-          <a href="#studio">Studio</a>
-          <a href="#process">Process</a>
-          <a href="#contact">Contact</a>
-        </div>
-        <div class="footer__col">
-          <h5>Réseaux</h5>
-          <a href="https://www.linkedin.com/in/fidele-sodoga/" target="_blank" rel="noopener">LinkedIn ↗</a>
-          <a href="https://www.instagram.com/fidele_sodoga/" target="_blank" rel="noopener">Instagram ↗</a>
-          <a href="https://www.facebook.com/fidele.sodoga" target="_blank" rel="noopener">Facebook ↗</a>
-          <a href="https://comeup.com/fr/@tech-solux" target="_blank" rel="noopener">ComeUp ↗</a>
-        </div>
-        <div class="footer__col">
-          <h5>Contact</h5>
-          <a href="https://forms.gle/HeqoTrc2DM23VLcP6" target="_blank" rel="noopener">Formulaire de brief ↗</a>
-          <a href="https://wa.me/12519108548" target="_blank" rel="noopener">WhatsApp ↗</a>
-          <span>Email — [à fournir]</span>
-          <span>Bénin</span>
-        </div>
+<!-- ============ FOOTER (ApeChain field + contour + chroma wordmark) ============ -->
+<footer class="tsf">
+  <canvas class="tsf__contour" id="tsf-contour" aria-hidden="true"></canvas>
+  <div class="tsf__mosaic" id="tsf-mosaic" aria-hidden="true"></div>
+  <div class="tsf__inner">
+    <div class="tsf__cols">
+      <div class="tsf__col">
+        <h5>Navigation</h5>
+        <ul>
+          <li><a class="roll" href="#work"><span>Travaux</span><span aria-hidden="true">Travaux</span></a></li>
+          <li><a class="roll" href="#services"><span>Services</span><span aria-hidden="true">Services</span></a></li>
+          <li><a class="roll" href="#studio"><span>Studio</span><span aria-hidden="true">Studio</span></a></li>
+          <li><a class="roll" href="#process"><span>Process</span><span aria-hidden="true">Process</span></a></li>
+          <li><a class="roll" href="#contact"><span>Contact</span><span aria-hidden="true">Contact</span></a></li>
+        </ul>
+      </div>
+      <div class="tsf__col">
+        <h5>Réseaux</h5>
+        <ul>
+          <li><a class="roll" href="https://www.linkedin.com/in/fidele-sodoga/" target="_blank" rel="noopener"><span>LinkedIn ↗</span><span aria-hidden="true">LinkedIn ↗</span></a></li>
+          <li><a class="roll" href="https://www.instagram.com/fidele_sodoga/" target="_blank" rel="noopener"><span>Instagram ↗</span><span aria-hidden="true">Instagram ↗</span></a></li>
+          <li><a class="roll" href="https://www.facebook.com/fidele.sodoga" target="_blank" rel="noopener"><span>Facebook ↗</span><span aria-hidden="true">Facebook ↗</span></a></li>
+          <li><a class="roll" href="https://comeup.com/fr/@tech-solux" target="_blank" rel="noopener"><span>ComeUp ↗</span><span aria-hidden="true">ComeUp ↗</span></a></li>
+        </ul>
+      </div>
+      <div class="tsf__col">
+        <h5>Contact</h5>
+        <ul>
+          <li><a class="roll" href="https://forms.gle/HeqoTrc2DM23VLcP6" target="_blank" rel="noopener"><span>Formulaire de brief ↗</span><span aria-hidden="true">Formulaire de brief ↗</span></a></li>
+          <li><a class="roll" href="https://wa.me/12519108548" target="_blank" rel="noopener"><span>WhatsApp ↗</span><span aria-hidden="true">WhatsApp ↗</span></a></li>
+          <li><a class="roll" href="mailto:#"><span>Email — [à fournir]</span><span aria-hidden="true">Email — [à fournir]</span></a></li>
+        </ul>
       </div>
     </div>
-    <div class="footer__bottom">
+
+    <!-- chromatic cursor-reactive wordmark (filled by footer.js) -->
+    <div class="tsf__wordzone">
+      <div class="tsf__word" id="tsf-word" data-text="TECHSOLUX"></div>
+    </div>
+
+    <div class="tsf__legal">
       <span>© 2026 TECHSOLUX — FIDÈLE SODOGA</span>
-      <span>LE PARTENAIRE DIGITAL QU'IL VOUS FAUT</span>
-      <span>TARIFS SUR DEVIS</span>
+      <div class="tsf__legal-links">
+        <span>LE PARTENAIRE DIGITAL QU'IL VOUS FAUT</span>
+        <span aria-hidden="true">|</span>
+        <span>TARIFS SUR DEVIS</span>
+      </div>
     </div>
   </div>
 </footer>
@@ -322,7 +335,9 @@
 <!-- app -->
 <script src="assets/projects.js"></script>
 <script src="assets/main.js"></script>
+<script src="assets/contour.js"></script>
 <script src="assets/hero-ape.js"></script>
+<script src="assets/footer.js"></script>
 <script src="assets/tweaks.js"></script>
 
 </body>
