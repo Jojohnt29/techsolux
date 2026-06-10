@@ -1,26 +1,37 @@
 /* ============================================================
    TECHSOLUX — base.css
-   Design system: dark brutalist tech. Shared across all pages.
+   Design system: ApeChain-style on a black-blue base.
+   Manuka (display) · DM Sans (body) · DM Mono (labels).
    Brand blue extracted from logo = #4353FF
    ============================================================ */
 
+/* ApeChain display face (global) */
+@font-face{
+  font-family:"Manuka";
+  src:url("fonts/manuka.otf") format("opentype");
+  font-display:swap;
+}
+
+/* signature gradient used by ApeChain rings / borders */
+:root{ --grad-ring:linear-gradient(135deg,#A281FF 10%,#EB8280 33%,#EBBF9A 66%,#89D0FF 90%); }
+
 /* ---- Tokens ---- */
 :root{
-  /* surfaces */
-  --bg:        #07080B;
-  --bg-1:      #0B0D12;
-  --bg-2:      #11141B;
-  --bg-3:      #171B23;
+  /* surfaces — black-blue (navy) */
+  --bg:        #050A18;
+  --bg-1:      #0A1124;
+  --bg-2:      #101A33;
+  --bg-3:      #182645;
 
-  /* hairlines */
-  --line:        rgba(255,255,255,.09);
-  --line-2:      rgba(255,255,255,.16);
-  --line-strong: rgba(255,255,255,.28);
+  /* hairlines (blue-tinted) */
+  --line:        rgba(140,165,255,.10);
+  --line-2:      rgba(140,165,255,.18);
+  --line-strong: rgba(140,165,255,.32);
 
   /* ink */
   --ink:    #F3F5FA;
-  --ink-2:  #9AA2B1;
-  --ink-3:  #5A6271;
+  --ink-2:  #A7B0C6;
+  --ink-3:  #5E6884;
   --ink-on-blue: #06070B;
 
   /* brand */
@@ -29,9 +40,10 @@
   --blue-dim:#2A309E;
   --blue-glow: rgba(67,83,255,.45);
 
-  /* fonts (tweakable) */
-  --font-display: "Space Grotesk", sans-serif;
-  --font-mono:    "JetBrains Mono", monospace;
+  /* fonts — ApeChain system */
+  --font-display: "Manuka", "Space Grotesk", sans-serif;
+  --font-body:    "DM Sans", system-ui, sans-serif;
+  --font-mono:    "DM Mono", "JetBrains Mono", monospace;
   --font-serif:   "Instrument Serif", serif;
 
   /* layout */
@@ -47,7 +59,7 @@ body{
   margin:0;
   background:var(--bg);
   color:var(--ink);
-  font-family:var(--font-display);
+  font-family:var(--font-body);
   font-weight:400;
   line-height:1.45;
   -webkit-font-smoothing:antialiased;
@@ -96,15 +108,17 @@ body::after{
 }
 .serif{ font-family:var(--font-serif); font-weight:400; font-style:italic; }
 
-h1,h2,h3,h4{ margin:0; font-weight:600; line-height:1.0; letter-spacing:-.02em; }
+h1,h2,h3,h4{ margin:0; font-family:var(--font-display); font-weight:400; line-height:1.0; letter-spacing:-.005em; }
 .display{
+  font-family:var(--font-display);
   font-size:clamp(48px, 9vw, 150px);
-  font-weight:600; line-height:.92; letter-spacing:-.035em;
+  font-weight:400; line-height:.92; letter-spacing:0;
   text-transform:uppercase;
 }
 .h-sec{
+  font-family:var(--font-display);
   font-size:clamp(34px, 5.4vw, 86px);
-  font-weight:600; line-height:.95; letter-spacing:-.03em; text-transform:uppercase;
+  font-weight:400; line-height:.95; letter-spacing:0; text-transform:uppercase;
 }
 .lead{ font-size:clamp(18px,2vw,24px); line-height:1.5; color:var(--ink-2); }
 
@@ -121,29 +135,37 @@ h1,h2,h3,h4{ margin:0; font-weight:600; line-height:1.0; letter-spacing:-.02em; 
 
 /* ---- Buttons ---- */
 .btn{
-  --bd:var(--line-2);
-  position:relative; display:inline-flex; align-items:center; gap:12px;
-  font-family:var(--font-mono); font-size:13px; font-weight:500;
-  letter-spacing:.06em; text-transform:uppercase;
-  padding:16px 24px; border:1px solid var(--bd); background:transparent; color:var(--ink);
-  cursor:pointer; transition:.35s var(--ease); overflow:hidden; border-radius:0;
+  position:relative; display:inline-flex; align-items:center; justify-content:center; gap:12px;
+  font-family:var(--font-mono); font-size:12px; font-weight:500;
+  letter-spacing:.1em; text-transform:uppercase;
+  padding:15px 26px; border:0; background:rgba(255,255,255,.04); color:var(--ink);
+  cursor:pointer; transition:.35s var(--ease); border-radius:999px;
 }
+/* gradient ring (ApeChain) drawn as a masked border on ::before */
+.btn::before{
+  content:""; position:absolute; inset:0; border-radius:inherit; padding:1.5px;
+  background:var(--grad-ring);
+  -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+          mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor; mask-composite:exclude;
+  opacity:.55; transition:opacity .3s var(--ease); pointer-events:none;
+}
+.btn:hover::before{ opacity:1; }
 .btn .arr{ transition:transform .35s var(--ease); }
-.btn:hover{ border-color:var(--ink); }
 .btn:hover .arr{ transform:translateX(5px); }
-.btn--primary{
-  background:var(--blue); border-color:var(--blue); color:#fff;
-}
-.btn--primary:hover{ background:var(--blue-2); border-color:var(--blue-2); box-shadow:0 0 40px var(--blue-glow); }
-.btn--lg{ padding:20px 30px; font-size:14px; }
+.btn--primary{ background:#fff; color:#06070B; }
+.btn--primary::before{ opacity:.9; }
+.btn--primary:hover{ box-shadow:0 0 40px var(--blue-glow); }
+.btn--lg{ padding:19px 32px; font-size:13px; }
 
-/* tag / chip */
+/* tag / chip — ApeChain pill */
 .tag{
   font-family:var(--font-mono); font-size:11px; font-weight:500;
-  letter-spacing:.1em; text-transform:uppercase; color:var(--ink-2);
-  padding:6px 12px; border:1px solid var(--line-2); white-space:nowrap;
+  letter-spacing:.08em; text-transform:uppercase; color:var(--ink-2);
+  padding:6px 13px; border:1px solid var(--line-2); white-space:nowrap;
+  border-radius:999px; background:rgba(255,255,255,.03);
 }
-.tag--blue{ color:var(--blue-2); border-color:var(--blue-dim); }
+.tag--blue{ color:var(--blue-2); border-color:var(--blue-dim); background:rgba(67,83,255,.10); }
 
 /* ---- Media placeholder (no real screenshots yet) ---- */
 .ph{
@@ -215,7 +237,7 @@ h1,h2,h3,h4{ margin:0; font-weight:600; line-height:1.0; letter-spacing:-.02em; 
    ============================================================ */
 .footer{ border-top:1px solid var(--line); padding-block:clamp(60px,8vw,110px) 40px; position:relative; }
 .footer__top{ display:flex; justify-content:space-between; gap:48px; flex-wrap:wrap; align-items:flex-start; }
-.footer__big{ font-size:clamp(40px,8vw,120px); line-height:.9; letter-spacing:-.03em; text-transform:uppercase; font-weight:600; }
+.footer__big{ font-family:var(--font-display); font-size:clamp(40px,8vw,120px); line-height:.9; letter-spacing:0; text-transform:uppercase; font-weight:400; }
 .footer__big a{ transition:color .3s; }
 .footer__big a:hover{ color:var(--blue-2); }
 .footer__cols{ display:flex; gap:clamp(40px,7vw,110px); flex-wrap:wrap; }
